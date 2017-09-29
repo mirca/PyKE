@@ -268,6 +268,11 @@ class KeplerTargetPixelFile(TargetPixelFile):
     def _get_aperture_flux(self):
         return np.nansum(self.flux[:, self.aperture_mask], axis=1)
 
+    def remove_outliers(self, n_std=3):
+        mu = np.nanmean(self.flux)
+        std = np.nanstd(self.flux)
+        outliers = (self.flux > mu + n_std * std) | (self.flux < mu - n_std * std)
+
     def to_lightcurve(self, method=None, subtract_bkg=False, **kwargs):
         """Performs apperture photometry and optionally detrends the lightcurve.
 
